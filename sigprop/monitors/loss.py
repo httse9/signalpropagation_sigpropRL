@@ -56,12 +56,12 @@ class SPLabelMetrics(SPLoss):
                 yy = context
                 yy = yy.unsqueeze(1) == yy.unsqueeze(0)
                 yy = yy.float() * 2 - 1
-                acc_mask = F.one_hot(acc_mask, t1.shape[0]).float()
-                acc_mask = (acc_mask == yy).any(1)
-            self.acc_sum += acc_mask.sum().item()
-            self.count += h1.shape[0]
+                # acc_mask = F.one_hot(acc_mask, t1.shape[0]).float()
+                # acc_mask = (acc_mask == yy).any(1)
+            # self.acc_sum += acc_mask.sum().item()
+            # self.count += h1.shape[0]
             self.loss_last = loss.item()
-            self.acc_last = acc_mask.sum().item() / h1.shape[0]
+            # self.acc_last = acc_mask.sum().item() / h1.shape[0]
         return loss
 
 __all__ = []
