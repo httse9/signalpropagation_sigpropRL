@@ -47,7 +47,7 @@ def L1_distance_max_all(sp_learn, h1, t1, h0, t0, context):
         y = h1 @ t1.t()
 
     yym = dist.min(1,keepdim=True)[0]
-    yy = (yy == yym).float()
+    yy = (dist == yym).float()
 
     l = soft_target_cross_entropy(y, yy)
 
@@ -122,7 +122,7 @@ def L2_distance_max_all(sp_learn, h1, t1, h0, t0, context):
         y = h1 @ t1.t()
 
     yym = dist.min(1,keepdim=True)[0]
-    yy = (yy == yym).float()
+    yy = (dist == yym).float()
 
     l = soft_target_cross_entropy(y, yy)
 
