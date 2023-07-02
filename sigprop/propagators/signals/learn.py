@@ -59,6 +59,14 @@ class SPLoss(SPLearn):
         loss = self.loss(self,h1,t1,h0,t0,context)
         return loss.item(), None, None
 
+class SPLossActorCritic(SPLoss):
+    def forward_ac(self, input):
+        h0, t0, context = input
+
+        h1,t1,h0,t0 = self.module((h0, t0))
+
+        return (h1, t1)
+
 __all__ = []
 g = globals()
 for name, obj in g.copy().items():

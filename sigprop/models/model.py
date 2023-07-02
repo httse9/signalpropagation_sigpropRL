@@ -24,6 +24,25 @@ class SPForward(SPModel):
         h0, t0 = self.signal((x, context, context))
         h1, t1, context = self.model((h0, t0, context))
         return h1
+    
+class SPForwardActorCritic(SPForward):
+    """
+    Extra forward method that allows gradient to 
+    propagate through layers to the input.
+    For Actor Critic Algorithms.
+    """
+    def forward_ac(self, input):
+        x, context = input
+        h0, t0 = self.signal.forward_ac((x, context, context))
+
+        for layer in self.model:
+            layer.orig = False
+
+        h1, t1, context = self.model((h0, t0, context))
+
+        for layer in self.model:
+            layer.orig = True
+        return h1
 
 __all__ = []
 g = globals()

@@ -58,6 +58,47 @@ class SPLoss(SPLearn):
     def eval_(self,h1,t1,h0,t0,context):
         loss = self.loss(self,h1,t1,h0,t0,context)
         return loss.item(), None, None
+    
+class SPLossActorCritic(SPLoss):
+
+    def forward(self, input):
+        if self.orig:
+            return self.forward_orig(input)
+        else:
+            return self.forward_ac(input)
+
+    def forward_orig(self, input):
+        h0, t0, context = input
+
+        h0 = h0.detach()
+        h1 = self.module(h0)
+
+        if t0 is not None:
+            t0 = t0.detach()
+            t1 = self.module(t0)
+
+            context = context.detach()
+            if self.training:
+                loss, correct, total = self.train_(h1,t1,h0,t0,context)
+            else:
+                loss, correct, total = self.eval_(h1,t1,h0,t0,context)
+
+            t1 = t1.detach()
+        else:
+            t1 = t0
+
+        h1 = h1.detach()
+
+        return (h1, t1, context)
+
+    def forward_ac(self, input):
+        h0, t0, context = input
+
+        h1 = self.module(h0)
+
+        t1 = t0
+    
+        return (h1, t1, context)
 
 __all__ = []
 g = globals()

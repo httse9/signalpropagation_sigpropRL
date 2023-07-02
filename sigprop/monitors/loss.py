@@ -32,6 +32,9 @@ class SPLabelMetrics(SPLoss):
         self.acc_last = 0.
         self.loss_last = 0.
 
+        # keep track of norm of h1
+        self.h1_norm = 0.
+
     def metrics(self):
         info = "[{}] Acc: {:.4f} ({:.4f}, {}/{}) \t Loss: {:.4f} ({:.4f})".format(
             self.name,
@@ -61,6 +64,9 @@ class SPLabelMetrics(SPLoss):
             # self.acc_sum += acc_mask.sum().item()
             # self.count += h1.shape[0]
             self.loss_last = loss.item()
+
+            # self.h1_norm = h1.flatten(1).square().sum(1).sqrt().mean().item()
+
             # self.acc_last = acc_mask.sum().item() / h1.shape[0]
         return loss
 

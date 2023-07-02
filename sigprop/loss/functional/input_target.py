@@ -51,6 +51,11 @@ def L1_distance_max_all(sp_learn, h1, t1, h0, t0, context):
 
     l = soft_target_cross_entropy(y, yy)
 
+    # print(h1.max().item(), t1.max().item())
+
+    # regularization
+    # l += (h1.square().sum(dim=-1).mean() + t1.square().sum(dim=-1).mean()) * 1e-3
+
     return l
 
 def L1_distance_softmax(sp_learn, h1, t1, h0, t0, context):
@@ -175,7 +180,7 @@ def cosine_sim_softmax(sp_learn, h1, t1, h0, t0, context):
     if len(t0.shape) == 2:
         t0 = t0.flatten(1)
         # normalize t0
-        t0 = t0 / t0.sum(1, keepdims=True)
+        t0 = t0 / t0.square().sum(1, keepdims=True).sqrt()
         yy = t0 @ t0.t()
     else:
         raise NotImplementedError("Not implemented for images")
@@ -193,9 +198,14 @@ def cosine_sim_softmax(sp_learn, h1, t1, h0, t0, context):
 
         y = h1 @ t1.t()
 
+    # print(t0)
+    # print(yy.max(), yy.min())
+
     yy = torch.softmax(yy, dim=-1)
+    # print(yy)
 
     l = soft_target_cross_entropy(y, yy)
+    # print(l)
 
     return l
 
@@ -209,7 +219,7 @@ def cosine_sim_max_all(sp_learn, h1, t1, h0, t0, context):
     if len(t0.shape) == 2:
         t0 = t0.flatten(1)
         # normalize t0
-        t0 = t0 / t0.sum(1, keepdims=True)
+        t0 = t0 / t0.square().sum(1, keepdims=True).sqrt()
         yy = t0 @ t0.t()
     else:
         raise NotImplementedError("Not implemented for images")
@@ -258,6 +268,9 @@ def v9_input_target_max_all(sp_learn,h1,t1,h0,t0,context):
     yy = (yy == yym).float()
 
     l = soft_target_cross_entropy(y, yy)
+
+    # regularization
+    # l += (h1.square().sum(dim=-1).mean() + t1.square().sum(dim=-1).mean()) * 1e-3
 
     return l
 
