@@ -31,6 +31,12 @@ class SPForwardActorCritic(SPForward):
     propagate through layers to the input.
     For Actor Critic Algorithms.
     """
+
+    def __init__(self, model, signal):
+        super().__init__(model, signal)
+        for layer in self.model:
+            layer.orig = True
+
     def forward_ac(self, input):
         x, context = input
         h0, t0 = self.signal.forward_ac((x, context, context))
