@@ -15,6 +15,28 @@ Compare
 2. cosine softmax, cosine max all
 """
 
+def identity_target(sp_learn, h1, t1, h0, t0, context):
+    
+    # this part stays the same
+    if len(t1.shape) > 2:
+        h1 = h1.flatten(2).permute(2,0,1)
+        t1 = t1.flatten(2).permute(2,1,0)
+        y = (h1 @ t1).mean(0)
+
+    else:
+        h1 = h1.flatten(1)
+        t1 = t1.flatten(1)
+
+        y = h1 @ t1.t()
+
+    bs = h1.size(0)
+    yy = torch.eye(bs, device=h1.device)
+
+    l = soft_target_cross_entropy(y, yy)
+
+    return l
+
+
 def L1_distance_max_all(sp_learn, h1, t1, h0, t0, context):
     """
     Use L1 distance to measure (dis)similarity between
